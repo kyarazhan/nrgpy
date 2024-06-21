@@ -9,7 +9,6 @@ from nrgpy.utils.utilities import (
 from .auth import cloud_api, cloud_url_base
 from .sites import cloud_sites
 import os
-from packaging.version import parse as parse_version
 import requests
 import zipfile
 
@@ -123,7 +122,7 @@ class CloudExport(cloud_api):
         logger_sn: str = "",
         start_date: str = "2014-01-01",
         end_date: str = "2030-12-31",
-        file_format: str = "txt",
+        file_format: str = "singleFile",
         client_id: str = "",
         client_secret: str = "",
         url_base: str = cloud_url_base,
@@ -262,19 +261,10 @@ class CloudExport(cloud_api):
             self.data["interval"] = self.interval
 
     def format_data_for_api_versions(self) -> None:
-        if self.api_version >= parse_version('1.9.0.0'):
-            logger.info(f"api_version is {self.api_version}, using newer export format")
-            if self.data["fileFormat"] == "rld":
-               self.data["fileFormat"] = "multipleFiles"
-            if self.data["fileFormat"] == "txt":
-               self.data["fileFormat"] = "singleFile"
-    
-        elif self.api_version < parse_version('1.9.0.0'):
-            logger.info(f"api_version is {self.api_version}, using older export format")
-            if self.data["fileFormat"] == "multipleFiles":
-               self.data["fileFormat"] = "rld"
-            if self.data["fileFormat"] == "singleFile":
-               self.data["fileFormat"] = "txt"
+        if self.data["fileFormat"] == "rld":
+            self.data["fileFormat"] = "multipleFiles"
+        if self.data["fileFormat"] == "txt":
+            self.data["fileFormat"] = "singleFile"
 
     def process_zip(self) -> None:
         if self.unzip:

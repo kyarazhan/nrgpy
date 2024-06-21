@@ -12,7 +12,7 @@ logger_sn = 820600087
 site_number = 353002
 start_date = "2021-01-01"
 end_date = "2021-01-05"
-unauth_site_id = 9
+unauth_site_id = 956
 
 
 @pytest.mark.skip(reason="this is not set up as a pytest yet")
@@ -54,13 +54,15 @@ def test_sites_api(client_id: str, client_secret: str):
 def test_export_api(client_id: str, client_secret: str):
     """"""
     try:
-        exporter = nrgpy.cloud_export(
+        exporter = nrgpy.CloudExport(
             client_id=client_id,
             client_secret=client_secret,
             site_id=site_id,
             start_date=start_date,
             end_date=end_date,
             out_dir=".",
+            unzip=True,
+            file_format="singleFile",
         )
 
         exporter.export()
@@ -88,7 +90,7 @@ def test_export_api(client_id: str, client_secret: str):
 def test_export_jobs_api(client_id: str, client_secret: str):
     """"""
     try:
-        exporter = nrgpy.export_job(
+        exporter = nrgpy.CloudExportJob(
             client_id=client_id,
             client_secret=client_secret,
             site_id=site_id,
@@ -118,7 +120,7 @@ def test_export_jobs_api(client_id: str, client_secret: str):
 def test_export_jobs_api_unauthorized(client_id: str, client_secret: str):
     """"""
     try:
-        exporter = nrgpy.export_job(
+        exporter = nrgpy.CloudExportJob(
             client_id=client_id,
             client_secret=client_secret,
             site_id=unauth_site_id,
